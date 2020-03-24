@@ -6,6 +6,7 @@
 config/secrets/prod/prod.decrypt.private.php
 public/bundles/
 var/
+!assets/
 vendor/
 ###< symfony/framework-bundle ###
 
@@ -18,7 +19,3 @@ phpunit.xml
 ###< PhpStorm ###
 .idea/
 ###< PhpStorm ###
-
-###> lexik/jwt-authentication-bundle ###
-/config/jwt/*.pem
-###< lexik/jwt-authentication-bundle ###

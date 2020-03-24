@@ -32,6 +32,11 @@ class User implements UserInterface
     private $email;
 
     /**
+     * @ORM\OneToOne(targetEntity="App\Entity\Image", cascade={"persist", "remove"})
+     */
+    private $image;
+
+    /**
      * User constructor.
      * @param $username
      */
@@ -106,5 +111,17 @@ class User implements UserInterface
 
     public function eraseCredentials()
     {
+    }
+
+    public function getImage(): ?Image
+    {
+        return $this->image;
+    }
+
+    public function setImage(?Image $image): self
+    {
+        $this->image = $image;
+
+        return $this;
     }
 }
