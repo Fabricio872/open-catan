@@ -21,6 +21,7 @@ RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local
 
 RUN echo "memory_limit=2048M\nmax_file_uploads=1024\nupload_max_filesize=64M\npost_max_size=2048M\nmax_execution_time=120" > /usr/local/etc/php/php.ini
 COPY init.sh /init.sh
+COPY  var/jwt /jwt
 
 EXPOSE 80
 CMD ["/bin/bash", "/init.sh"]
