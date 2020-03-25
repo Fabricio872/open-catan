@@ -17,15 +17,18 @@ class ImageController extends ExtendedAbstractController
     static string $assetsDir = __DIR__ . "/../../assets/";
 
     /**
-     * @Route("/api/profile-picture", name="profile")
+     * @Route("/upload/{id}", name="uploaded")
      */
-    public function profile()
+    public function uploaded($id)
     {
         /** @var Image $image */
-        $image = $this->getUser()->getImage();
+        $image = $this->em()->getRepository(Image::class)->find($id);
 
         if ($image == null) {
-            return $this->redirectToRoute("image.asset", ["image" => "default-user.png"]);
+            return $this->json([
+                "status" => Response::HTTP_NOT_FOUND,
+                "failed" => "File $image not found"
+            ], Response::HTTP_NOT_FOUND);
         }
 
         $content = file_get_contents($image->getFile()->getRealPath());

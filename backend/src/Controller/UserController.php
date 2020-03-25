@@ -7,6 +7,7 @@ use App\Entity\User;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 
 /**
  * Class UserController
@@ -15,6 +16,25 @@ use Symfony\Component\Routing\Annotation\Route;
  */
 class UserController extends ExtendedAbstractController
 {
+    /**
+     * @Route("/get/profile-picture", name="geProfilePic")
+     */
+    public function profile()
+    {
+        /** @var Image $image */
+        $image = $this->getUser()->getImage();
+
+        if ($image == null) {
+            return $this->json([
+                "url" => $this->generateUrl("image.asset", ["image" => "default-user.png"], UrlGeneratorInterface::ABSOLUTE_URL)
+            ]);
+        }
+
+        return $this->json([
+            "url" => $this->generateUrl("image.uploaded", ["id" => $image->getId()], UrlGeneratorInterface::ABSOLUTE_URL)
+        ]);
+    }
+
     /**
      * @Route("/new/profile-picture", name="uploadProfilePic", methods={"POST"})
      */
