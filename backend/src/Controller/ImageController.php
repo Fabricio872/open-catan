@@ -3,7 +3,6 @@
 namespace App\Controller;
 
 use App\Entity\Image;
-use App\Entity\User;
 use Symfony\Component\HttpFoundation\File\File;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
@@ -23,7 +22,12 @@ class ImageController extends ExtendedAbstractController
     public function profile()
     {
         /** @var Image $image */
-        $image = $this->em()->getRepository(User::class)->find($this->getUser())->getImage();
+        $image = $this->getUser()->getImage();
+
+        if ($image == null) {
+            return $this->redirectToRoute("image.asset", ["image" => "default-user.png"]);
+        }
+
         $content = file_get_contents($image->getFile()->getRealPath());
 
         $headers = array(

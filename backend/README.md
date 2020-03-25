@@ -1,8 +1,2 @@
 ### API Usage Table
-| Entrypoint                | Method | Header                                                           | Body                                                               | Response                                                               |
-|---------------------------|--------|------------------------------------------------------------------|--------------------------------------------------------------------|------------------------------------------------------------------------|
-| /api/login\_check         | POST   | Content\-Type: application/json                                  | \{"username": "string", "password": "string" \}                    | \{ "token": "string" \}                                                |
-| /register                 | POST   | Content\-Type: application/json                                  | \{"username": "string", "email": "string", "password": "string" \} | \{ "status": 200, "success": "User <username> successfully created" \} |
-| /api                      | GET    | Content\-Type: application/json, Authorization: Bearer \[token\] |                                                                    | "you are logged in"                                                    |
-| /api/new/profile\-picture | POST   | Content\-Type: application/json, Authorization: Bearer \[token\] | \{"profile\-picture": "\[picture\]"\}                              | \{ "status": 200, "success": "\[imagename\]" \}                        |
-| /asset/\[imagename\]      | GET    |                                                                  |                                                                    | \[assetImage\]                                                         |
+API usage examples could be found [HERE](https://documenter.getpostman.com/view/10375645/SzYT62Vn)

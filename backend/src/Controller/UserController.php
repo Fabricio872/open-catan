@@ -5,6 +5,7 @@ namespace App\Controller;
 use App\Entity\Image;
 use App\Entity\User;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 
 /**
@@ -19,10 +20,14 @@ class UserController extends ExtendedAbstractController
      */
     public function uploadProfilePic(Request $request)
     {
+        if ($request->files->get('profile-picture') == null) {
+            return $this->json("bad request", Response::HTTP_BAD_REQUEST);
+        }
         $image = new Image();
         $image->setFile($request->files->get('profile-picture'));
 
-        $user = $this->em()->getRepository(User::class)->find($this->getUser());
+        /** @var User $user */
+        $user = $this->getUser();
         if ($user->getImage() != null) {
             $this->em()->remove($user->getImage());
         }
@@ -34,6 +39,28 @@ class UserController extends ExtendedAbstractController
         return $this->json([
             "status" => 200,
             "success" => $image->getName()
+        ]);
+    }
+
+    /**
+     * @Route("/delete/profile-picture", name="removeProfilePic", methods={"DELETE"})
+     */
+    public function removeProfilePic()
+    {
+        /** @var User $user */
+        $user = $this->getUser();
+        if ($user->getImage() == null) {
+            return $this->json([
+                "status" => 200,
+                "fail" => "No profile picture found"
+            ]);
+        }
+        $user->setImage(null);
+        $this->em()->flush();
+
+        return $this->json([
+            "status" => 200,
+            "success" => "Picture deleted"
         ]);
     }
 }

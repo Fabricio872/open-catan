@@ -87,7 +87,7 @@ class Image
     }
 
     /**
-     * @ORM\PostRemove
+     * @ORM\PreRemove()
      */
     public function removeFile()
     {
