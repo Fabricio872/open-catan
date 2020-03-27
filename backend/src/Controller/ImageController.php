@@ -19,18 +19,8 @@ class ImageController extends ExtendedAbstractController
     /**
      * @Route("/upload/{id}", name="uploaded")
      */
-    public function uploaded($id)
+    public function uploaded(Image $image)
     {
-        /** @var Image $image */
-        $image = $this->em()->getRepository(Image::class)->find($id);
-
-        if ($image == null) {
-            return $this->json([
-                "status" => Response::HTTP_NOT_FOUND,
-                "failed" => "File $image not found"
-            ], Response::HTTP_NOT_FOUND);
-        }
-
         $content = file_get_contents($image->getFile()->getRealPath());
 
         $headers = array(
@@ -45,10 +35,7 @@ class ImageController extends ExtendedAbstractController
     public function asset(string $image)
     {
         if (!file_exists(self::$assetsDir . $image)) {
-            return $this->json([
-                "status" => Response::HTTP_NOT_FOUND,
-                "failed" => "File $image not found"
-            ], Response::HTTP_NOT_FOUND);
+            throw $this->createNotFoundException("File $image not found");
         }
 
         $imageFile = new File(self::$assetsDir . $image);
