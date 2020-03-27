@@ -2,6 +2,7 @@
 
 namespace App\EventListener;
 
+use Symfony\Component\DependencyInjection\ParameterBag\ParameterBagInterface;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Event\ExceptionEvent;
@@ -9,6 +10,13 @@ use Symfony\Component\HttpKernel\Exception\HttpExceptionInterface;
 
 class ExceptionListener
 {
+    private $params;
+
+    public function __construct(ParameterBagInterface $params)
+    {
+        $this->params = $params;
+    }
+
     public function onKernelException(ExceptionEvent $event)
     {
         $exception = $event->getThrowable();;
@@ -19,6 +27,13 @@ class ExceptionListener
         $body->message = $exception->getMessage();
         $body->file = $exception->getFile();
         $body->line = $exception->getLine();
+
+        if ($this->params->get("kernel.environment") == "dev") {
+
+            $body->file = $exception->getFile();
+            $body->line = $exception->getLine();
+            $body->trace = $exception->getTrace();
+        }
 
         // HttpExceptionInterface is a special type of exception that
         // holds status code and header details
