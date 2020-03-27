@@ -7,6 +7,7 @@
         "ext-iconv": "*",
         "ext-json": "^7.4",
         "lexik/jwt-authentication-bundle": "^2.6",
+        "nzo/url-encryptor-bundle": "^4.3",
         "sensio/framework-extra-bundle": "^5.1",
         "symfony/asset": "4.4.*",
         "symfony/console": "4.4.*",

@@ -3,6 +3,7 @@
 namespace App\Controller;
 
 use App\Entity\Image;
+use Nzo\UrlEncryptorBundle\Annotations\ParamDecryptor;
 use Symfony\Component\HttpFoundation\File\File;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
@@ -17,6 +18,7 @@ class ImageController extends ExtendedAbstractController
     static string $assetsDir = __DIR__ . "/../../assets/";
 
     /**
+     * @ParamDecryptor(params={"id"})
      * @Route("/upload/{id}", name="uploaded")
      */
     public function uploaded(Image $image)

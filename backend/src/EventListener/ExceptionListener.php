@@ -43,7 +43,6 @@ class ExceptionListener
             $response->headers->replace($exception->getHeaders());
         } else {
             $response->setStatusCode(Response::HTTP_INTERNAL_SERVER_ERROR);
-            $body->code = $exception->getStatusCode();
         }
 
         $response->setJson(json_encode($body));
