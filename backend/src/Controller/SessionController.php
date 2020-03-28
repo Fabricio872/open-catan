@@ -27,6 +27,10 @@ class SessionController extends ExtendedAbstractController
         $host->setUser($this->getUser());
         $host->setColor($data->color);
 
+        if (!isset($data->seed)) {
+            $data->seed = crc32(uniqid());
+        }
+
         $session = new Session();
         $session->setName($data->name);
         $session->setPlayerCount($data->players);

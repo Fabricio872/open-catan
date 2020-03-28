@@ -29,7 +29,7 @@ class Session
     private $playerCount;
 
     /**
-     * @ORM\Column(type="string", length=255)
+     * @ORM\Column(type="integer")
      */
     private $seed;
 
@@ -84,12 +84,12 @@ class Session
         return $this;
     }
 
-    public function getSeed(): ?string
+    public function getSeed(): int
     {
         return $this->seed;
     }
 
-    public function setSeed(string $seed): self
+    public function setSeed(int $seed): self
     {
         $this->seed = $seed;
 

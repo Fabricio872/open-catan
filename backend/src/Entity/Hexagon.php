@@ -32,6 +32,11 @@ class Hexagon
      */
     private $session;
 
+    /**
+     * @ORM\Column(type="integer")
+     */
+    private $value;
+
     public function getId(): ?int
     {
         return $this->id;
@@ -54,6 +59,19 @@ class Hexagon
         return $this->type;
     }
 
+    public function getTypeName(): string
+    {
+        $types = [
+            "desert",
+            "wood",
+            "sheep",
+            "stone",
+            "brick",
+            "wheat"
+        ];
+        return $types[$this->type];
+    }
+
     public function setType(?int $type): self
     {
         $this->type = $type;
@@ -69,6 +87,18 @@ class Hexagon
     public function setSession(?Session $session): self
     {
         $this->session = $session;
+
+        return $this;
+    }
+
+    public function getValue(): ?int
+    {
+        return $this->value;
+    }
+
+    public function setValue(int $value): self
+    {
+        $this->value = $value;
 
         return $this;
     }
