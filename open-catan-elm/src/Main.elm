@@ -5,6 +5,7 @@ import Html exposing (Html, div, h1, img, text)
 import Html.Attributes as Attributes exposing (src)
 import Html.Events as Events
 import Http
+import Json.Decode as Decode
 import Json.Encode as Encode
 
 
@@ -13,7 +14,9 @@ import Json.Encode as Encode
 
 
 type alias Model =
-    { data : Data }
+    { data : Data
+    , response : String
+    }
 
 
 type alias Data =
@@ -25,7 +28,11 @@ type alias Data =
 
 init : ( Model, Cmd Msg )
 init =
-    ( { data = Data "name" "email" "password" }, Cmd.none )
+    ( { data = Data "name" "email" "password"
+      , response = ""
+      }
+    , Cmd.none
+    )
 
 
 
@@ -34,7 +41,7 @@ init =
 
 type Msg
     = Register
-    | RegisterResponse (Result Http.Error ())
+    | RegisterResponse (Result Http.Error String)
 
 
 update : Msg -> Model -> ( Model, Cmd Msg )
@@ -43,22 +50,31 @@ update msg model =
         Register ->
             ( model, registerCmd model.data )
 
-        RegisterResponse _ ->
-            ( model, Cmd.none )
+        RegisterResponse result ->
+            case result of
+                Err error ->
+                    let
+                        _ =
+                            Debug.log "error" error
+                    in
+                    ( model, Cmd.none )
+
+                Ok response ->
+                    ( { model | response = response }, Cmd.none )
 
 
 registerCmd : Data -> Cmd Msg
 registerCmd data =
     let
         url =
-            "http://localhost:3000" ++ "/register"
+            "http://localhost:8000" ++ "/register"
     in
     Http.request
         { method = "POST"
         , headers = [ Http.header "Content-Type" "application/json" ]
         , url = url
         , body = Http.jsonBody <| dataEncoder data
-        , expect = Http.expectWhatever RegisterResponse
+        , expect = Http.expectJson RegisterResponse responseDecoder
         , timeout = Nothing
         , tracker = Nothing
         }
@@ -73,6 +89,11 @@ dataEncoder { username, email, password } =
         ]
 
 
+responseDecoder : Decode.Decoder String
+responseDecoder =
+    Decode.field "success" Decode.string
+
+
 
 ---- VIEW ----
 
@@ -81,9 +102,8 @@ view : Model -> Html Msg
 view model =
     div []
         [ img [ src "/logo.svg" ] []
-        , h1 []
-            [ Html.button [ Events.onClick Register ] []
-            ]
+        , Html.button [ Events.onClick Register ] [ Html.text "Send register" ]
+        , Html.text model.response
         ]
 
 
