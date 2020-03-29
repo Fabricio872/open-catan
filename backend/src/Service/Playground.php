@@ -81,57 +81,43 @@ class Playground
 
     private function getTable(): array
     {
-        switch ($this->level) {
-            case 2:
-                return [
-                    1,
-                    1,
-                    1,
-                    1,
-                    2,
-                    2,
-                    2,
-                    2,
-                    3,
-                    3,
-                    3,
-                    4,
-                    4,
-                    4,
-                    5,
-                    5,
-                    5,
-                    5,
-                ];
-        }
-        throw new \Exception("invalid level");
+
+        $rations = [
+            1 => 4,
+            2 => 4,
+            3 => 3,
+            4 => 3,
+            5 => 4,
+        ];
+        return $this->getRatioTable($rations);
     }
 
     private function getTableNumbers()
     {
-        switch ($this->level) {
-            case 2:
-                return [
-                    2,
-                    3,
-                    3,
-                    4,
-                    4,
-                    5,
-                    5,
-                    6,
-                    6,
-                    8,
-                    8,
-                    9,
-                    9,
-                    10,
-                    10,
-                    11,
-                    11,
-                    12,
-                ];
+        $rations = [
+            2=>1,
+            3=>2,
+            4=>2,
+            5=>2,
+            6=>2,
+            8=>2,
+            9=>2,
+            10=>2,
+            11=>2,
+            12=>1,
+        ];
+        return $this->getRatioTable($rations);
+    }
+
+    private function getRatioTable(array $ratios): array
+    {
+        $result = [];
+        foreach ($ratios as $key => $ratio) {
+            $realRatio = Hex::totalInRadius($this->level) / array_sum($ratios) * $ratio;
+            for ($i = 0; $i < $realRatio; $i++) {
+                $result[] = $key;
+            }
         }
-        throw new \Exception("invalid level");
+        return $result;
     }
 }

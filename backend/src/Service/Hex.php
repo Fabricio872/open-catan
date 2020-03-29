@@ -71,4 +71,13 @@ class Hex
         $row = $cube[2];
         return [$col, $row];
     }
+
+    public static function totalInRadius(int $radius)
+    {
+        $total = 0;
+        for ($i = $radius; $i > 0; $i--) {
+            $total += 6 * $i;
+        }
+        return $total;
+    }
 }
