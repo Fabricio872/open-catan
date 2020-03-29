@@ -3,6 +3,7 @@
 namespace App\Controller;
 
 use App\Entity\Image;
+use Nzo\UrlEncryptorBundle\Annotations\ParamDecryptor;
 use Symfony\Component\HttpFoundation\File\File;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
@@ -17,20 +18,11 @@ class ImageController extends ExtendedAbstractController
     static string $assetsDir = __DIR__ . "/../../assets/";
 
     /**
+     * @ParamDecryptor(params={"id"})
      * @Route("/upload/{id}", name="uploaded")
      */
-    public function uploaded($id)
+    public function uploaded(Image $image)
     {
-        /** @var Image $image */
-        $image = $this->em()->getRepository(Image::class)->find($id);
-
-        if ($image == null) {
-            return $this->json([
-                "status" => Response::HTTP_NOT_FOUND,
-                "failed" => "File $image not found"
-            ], Response::HTTP_NOT_FOUND);
-        }
-
         $content = file_get_contents($image->getFile()->getRealPath());
 
         $headers = array(
@@ -45,10 +37,7 @@ class ImageController extends ExtendedAbstractController
     public function asset(string $image)
     {
         if (!file_exists(self::$assetsDir . $image)) {
-            return $this->json([
-                "status" => Response::HTTP_NOT_FOUND,
-                "failed" => "File $image not found"
-            ], Response::HTTP_NOT_FOUND);
+            throw $this->createNotFoundException("File $image not found");
         }
 
         $imageFile = new File(self::$assetsDir . $image);

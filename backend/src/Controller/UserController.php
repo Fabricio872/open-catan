@@ -31,7 +31,7 @@ class UserController extends ExtendedAbstractController
         }
 
         return $this->json([
-            "url" => $this->generateUrl("image.uploaded", ["id" => $image->getId()], UrlGeneratorInterface::ABSOLUTE_URL)
+            "url" => $this->generateUrl("image.uploaded", ["id" => $this->encryptor->encrypt($image->getId())], UrlGeneratorInterface::ABSOLUTE_URL)
         ]);
     }
 
