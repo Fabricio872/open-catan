@@ -7,7 +7,6 @@ use App\Entity\User;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
-use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 
 /**
  * Class UserController
@@ -24,14 +23,8 @@ class UserController extends ExtendedAbstractController
         /** @var Image $image */
         $image = $this->getUser()->getImage();
 
-        if ($image == null) {
-            return $this->json([
-                "url" => $this->generateUrl("image.asset", ["image" => "default-user.png"], UrlGeneratorInterface::ABSOLUTE_URL)
-            ]);
-        }
-
         return $this->json([
-            "url" => $this->generateUrl("image.uploaded", ["id" => $this->encryptor->encrypt($image->getId())], UrlGeneratorInterface::ABSOLUTE_URL)
+            "url" => $this->getImageUrl($image, "default-user.png")
         ]);
     }
 

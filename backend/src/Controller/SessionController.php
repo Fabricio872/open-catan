@@ -79,23 +79,4 @@ class SessionController extends ExtendedAbstractController
             "game" => $session->getName()
         ]);
     }
-
-    /**
-     * @ParamDecryptor(params={"id"})
-     * @Route("/list/{id}", name="getPlayers", methods={"POST"})
-     */
-    public function getPlayers(Session $session)
-    {
-        $players = [];
-        foreach ($session->getPlayers() as $player) {
-            $playerArray["id"] = $player->getId();
-            $playerArray["color"] = $player->getColor();
-            $playerArray["is_host"] = (bool)$player->getIsHost();
-            $playerArray["profile_picture"] = $this->generateUrl("image.uploaded",
-                ['id' => $this->encryptor->encrypt($player->getUser()->getImage()->getId())],
-                UrlGeneratorInterface::ABSOLUTE_URL);
-            $players[] = $playerArray;
-        }
-        return $this->json($players);
-    }
 }

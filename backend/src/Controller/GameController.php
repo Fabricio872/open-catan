@@ -15,22 +15,29 @@ class GameController extends ExtendedAbstractController
 {
     /**
      * @ParamDecryptor({"id"})
-     * @Route("/get_playground/{id}", name="getPlayground", methods={"POST"})
+     * @Route("/get_session/{id}", name="getSession", methods={"POST"})
      */
-    public function getPlayground(Session $session, Playground $playground)
+    public function getSession(Session $session, Playground $playground)
     {
         $playground->setSession($session);
 
-        $hexagons = [];
+        $gameArray = [];
         foreach ($playground->getPlan() as $hexagon){
             $hexArray["id"] = $hexagon->getId();
             $hexArray["position"] = $hexagon->getPosition();
 //            $hexArray["position"] = Hex::cubeToOddr($hexagon->getPosition());
             $hexArray["type"] = $hexagon->getTypeName();
             $hexArray["value"] = $hexagon->getValue();
-            $hexagons[] = $hexArray;
+            $gameArray["playground"][] = $hexArray;
+        }
+        foreach ($session->getPlayers() as $player){
+            $playerArray["id"] = $player->getId();
+            $playerArray["color"] = $player->getColor();
+            $playerArray["is_host"] = (bool)$player->getIsHost();
+            $playerArray["profile_picture"] = $this->getImageUrl($player->getUser()->getImage(), "default-user.png");
+            $gameArray["players"][] = $playerArray;
         }
 
-        return $this->json($hexagons);
+        return $this->json($gameArray);
     }
 }
