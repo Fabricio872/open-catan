@@ -96,13 +96,13 @@ class SessionController extends ExtendedAbstractController
     public function getPlayers(Session $session)
     {
         $players = [];
+        $this->em()->getRepository(Player::class)->setOnline($this->getUser(), $session);
         foreach ($session->getPlayers() as $player) {
             $playerArray["id"] = $player->getId();
             $playerArray["color"] = $player->getColor();
             $playerArray["is_host"] = (bool)$player->getIsHost();
-            $playerArray["profile_picture"] = $this->generateUrl("image.uploaded",
-                ['id' => $this->encryptor->encrypt($player->getUser()->getImage()->getId())],
-                UrlGeneratorInterface::ABSOLUTE_URL);
+            $playerArray["is_online"] = (bool)$player->getIsOnline();
+            $playerArray["profile_picture"] = $this->getImageUrl($player->getUser()->getImage(), "default-user.png");
             $players[] = $playerArray;
         }
         return $this->json($players);

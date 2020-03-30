@@ -38,9 +38,15 @@ class Player
      */
     private $color;
 
+    /**
+     * @ORM\Column(type="datetime")
+     */
+    private $online;
+
     public function __construct()
     {
         $this->isHost = false;
+        $this->online = new \DateTime("now");
     }
 
     public function getId(): ?int
@@ -92,6 +98,23 @@ class Player
     public function setColor(string $color): self
     {
         $this->color = $color;
+
+        return $this;
+    }
+
+    public function getOnline(): ?\DateTimeInterface
+    {
+        return $this->online;
+    }
+
+    public function getIsOnline(): bool
+    {
+        return ($this->online > new \DateTime("now -10seconds"));
+    }
+
+    public function setOnline(\DateTimeInterface $online): self
+    {
+        $this->online = $online;
 
         return $this;
     }

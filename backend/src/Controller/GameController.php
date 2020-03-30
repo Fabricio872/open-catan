@@ -2,6 +2,7 @@
 
 namespace App\Controller;
 
+use App\Entity\Player;
 use App\Entity\Session;
 use App\Service\Hex;
 use App\Service\Playground;
@@ -20,6 +21,7 @@ class GameController extends ExtendedAbstractController
     public function getSession(Session $session, Playground $playground)
     {
         $playground->setSession($session);
+        $this->em()->getRepository(Player::class)->setOnline($this->getUser(), $session);
 
         $response["name"] = $session->getName();
         $response["seed"] = $session->getSeed();
