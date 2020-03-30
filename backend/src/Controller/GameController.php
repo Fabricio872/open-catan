@@ -21,23 +21,23 @@ class GameController extends ExtendedAbstractController
     {
         $playground->setSession($session);
 
-        $gameArray = [];
-        foreach ($playground->getPlan() as $hexagon){
+        $response["name"] = $session->getName();
+        $response["seed"] = $session->getSeed();
+        $response["date"] = $session->getDate();
+        $response["roads"] = $session->getRoads();
+        $response["cities"] = $session->getCities();
+        $response["score"] = $session->getScore();
+        $response["settlements"] = $session->getSettlements();
+
+        foreach ($playground->getPlan() as $hexagon) {
             $hexArray["id"] = $hexagon->getId();
             $hexArray["position"] = $hexagon->getPosition();
 //            $hexArray["position"] = Hex::cubeToOddr($hexagon->getPosition());
             $hexArray["type"] = $hexagon->getTypeName();
             $hexArray["value"] = $hexagon->getValue();
-            $gameArray["playground"][] = $hexArray;
-        }
-        foreach ($session->getPlayers() as $player){
-            $playerArray["id"] = $player->getId();
-            $playerArray["color"] = $player->getColor();
-            $playerArray["is_host"] = (bool)$player->getIsHost();
-            $playerArray["profile_picture"] = $this->getImageUrl($player->getUser()->getImage(), "default-user.png");
-            $gameArray["players"][] = $playerArray;
+            $response["plan"][] = $hexArray;
         }
 
-        return $this->json($gameArray);
+        return $this->json($response);
     }
 }

@@ -27,15 +27,24 @@ class SessionController extends ExtendedAbstractController
         $host->setUser($this->getUser());
         $host->setColor($data->color);
 
-        if (!isset($data->seed)) {
-            $data->seed = crc32(uniqid());
-        }
+        $data->seed ??= crc32(uniqid());
+        $data->score ??= 10;
+        $data->cities ??= 4;
+        $data->settlements ??= 5;
+        $data->roads ??= 15;
 
         $session = new Session();
-        $session->setName($data->name);
-        $session->setPlayerCount($data->players);
-        $session->setSeed($data->seed);
-        $session->addPlayer($host);
+        $session
+            ->setName($data->name)
+            ->setPlayerCount($data->players)
+            ->setSeed($data->seed)
+            ->addPlayer($host)
+            ->setScore($data->score)
+            ->setCities($data->cities)
+            ->setSettlements($data->settlements)
+            ->setRoads($data->roads)
+        ;
+
 
         $this->em()->persist($session);
         $this->em()->flush();
@@ -78,5 +87,24 @@ class SessionController extends ExtendedAbstractController
             "success" => "player added",
             "game" => $session->getName()
         ]);
+    }
+
+    /**
+     * @ParamDecryptor(params={"id"})
+     * @Route("/list/{id}", name="getPlayers", methods={"POST"})
+     */
+    public function getPlayers(Session $session)
+    {
+        $players = [];
+        foreach ($session->getPlayers() as $player) {
+            $playerArray["id"] = $player->getId();
+            $playerArray["color"] = $player->getColor();
+            $playerArray["is_host"] = (bool)$player->getIsHost();
+            $playerArray["profile_picture"] = $this->generateUrl("image.uploaded",
+                ['id' => $this->encryptor->encrypt($player->getUser()->getImage()->getId())],
+                UrlGeneratorInterface::ABSOLUTE_URL);
+            $players[] = $playerArray;
+        }
+        return $this->json($players);
     }
 }

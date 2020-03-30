@@ -48,6 +48,26 @@ class Session
      */
     private $hexagons;
 
+    /**
+     * @ORM\Column(type="integer")
+     */
+    private $score;
+
+    /**
+     * @ORM\Column(type="integer")
+     */
+    private $cities;
+
+    /**
+     * @ORM\Column(type="integer")
+     */
+    private $settlements;
+
+    /**
+     * @ORM\Column(type="integer")
+     */
+    private $roads;
+
     public function __construct()
     {
         $this->date = new \DateTime("now");
@@ -166,6 +186,54 @@ class Session
                 $hexagon->setSession(null);
             }
         }
+
+        return $this;
+    }
+
+    public function getScore(): ?int
+    {
+        return $this->score;
+    }
+
+    public function setScore(int $score): self
+    {
+        $this->score = $score;
+
+        return $this;
+    }
+
+    public function getCities(): ?int
+    {
+        return $this->cities;
+    }
+
+    public function setCities(int $cities): self
+    {
+        $this->cities = $cities;
+
+        return $this;
+    }
+
+    public function getSettlements(): ?int
+    {
+        return $this->settlements;
+    }
+
+    public function setSettlements(int $settlements): self
+    {
+        $this->settlements = $settlements;
+
+        return $this;
+    }
+
+    public function getRoads(): ?int
+    {
+        return $this->roads;
+    }
+
+    public function setRoads(int $roads): self
+    {
+        $this->roads = $roads;
 
         return $this;
     }
