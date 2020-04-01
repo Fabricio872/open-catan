@@ -5,6 +5,7 @@ echo "[0] Build new Docker Container"
 echo "[1] Remove Container"
 echo "[2] Remove Container and Image"
 echo "[3] Open container console"
+echo "[4] Update container"
 read option
 
 case $option in
@@ -26,6 +27,11 @@ case $option in
 
 	3)
 		docker container exec -it open-catan bash
+		;;
+
+	4)
+		docker container exec -it open-catan git checkout -- .
+		docker container exec -it open-catan git pull https://github.com/Fabricio872/open-catan.git develop
 		;;
 
 	*)
