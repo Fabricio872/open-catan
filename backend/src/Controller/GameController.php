@@ -10,7 +10,7 @@ use Nzo\UrlEncryptorBundle\Annotations\ParamDecryptor;
 use Symfony\Component\Routing\Annotation\Route;
 
 /**
- * @Route("/api/game", name="game")
+ * @Route("/api/game", name="game.")
  */
 class GameController extends ExtendedAbstractController
 {
@@ -32,7 +32,7 @@ class GameController extends ExtendedAbstractController
         $response["settlements"] = $session->getSettlements();
 
         foreach ($playground->getPlan() as $hexagon) {
-            $hexArray["id"] = $hexagon->getId();
+            $hexArray["id"] = $this->encryptor->encrypt($hexagon->getId());
             $hexArray["position"] = $hexagon->getPosition();
 //            $hexArray["position"] = Hex::cubeToOddr($hexagon->getPosition());
             $hexArray["type"] = $hexagon->getTypeName();

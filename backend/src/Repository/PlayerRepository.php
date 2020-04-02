@@ -24,11 +24,16 @@ class PlayerRepository extends ServiceEntityRepository
     public function setOnline(User $user, Session $session)
     {
         $em = $this->getEntityManager();
-        $player =$this->findOneBy(["user" => $user, "session" => $session]);
+        $player = $this->getPlayer($user, $session);
 
         $player->setOnline(new \DateTime("now"));
         $em->persist($player);
         $em->flush();
+    }
+
+    public function getPlayer(User $user, Session $session): Player
+    {
+        return $this->findOneBy(["user" => $user, "session" => $session]);
     }
 
     // /**

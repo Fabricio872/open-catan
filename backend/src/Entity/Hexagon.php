@@ -67,7 +67,8 @@ class Hexagon
             "sheep",
             "stone",
             "brick",
-            "wheat"
+            "wheat",
+            "water"
         ];
         return $types[$this->type];
     }

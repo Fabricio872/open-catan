@@ -71,7 +71,7 @@ class Playground
             $hexagon
                 ->setSession($this->session)
                 ->setValue(0)
-                ->setType(0)
+                ->setType(6)
                 ->setPosition($coordinate);
 
             $this->em->persist($hexagon);

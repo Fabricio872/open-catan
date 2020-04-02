@@ -2,6 +2,8 @@
 
 namespace App\Entity;
 
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
@@ -43,10 +45,22 @@ class Player
      */
     private $online;
 
+    /**
+     * @ORM\OneToMany(targetEntity="Road", mappedBy="user")
+     */
+    private $roads;
+
+    /**
+     * @ORM\OneToMany(targetEntity="Settlement", mappedBy="player", orphanRemoval=true)
+     */
+    private $settlements;
+
     public function __construct()
     {
         $this->isHost = false;
         $this->online = new \DateTime("now");
+        $this->roads = new ArrayCollection();
+        $this->settlements = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -115,6 +129,68 @@ class Player
     public function setOnline(\DateTimeInterface $online): self
     {
         $this->online = $online;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection|Road[]
+     */
+    public function getRoads(): Collection
+    {
+        return $this->roads;
+    }
+
+    public function addRoad(Road $road): self
+    {
+        if (!$this->roads->contains($road)) {
+            $this->roads[] = $road;
+            $road->setPlayer($this);
+        }
+
+        return $this;
+    }
+
+    public function removeRoad(Road $road): self
+    {
+        if ($this->roads->contains($road)) {
+            $this->roads->removeElement($road);
+            // set the owning side to null (unless already changed)
+            if ($road->getPlayer() === $this) {
+                $road->setPlayer(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection|Settlement[]
+     */
+    public function getSettlements(): Collection
+    {
+        return $this->settlements;
+    }
+
+    public function addSettlement(Settlement $settlement): self
+    {
+        if (!$this->settlements->contains($settlement)) {
+            $this->settlements[] = $settlement;
+            $settlement->setPlayer($this);
+        }
+
+        return $this;
+    }
+
+    public function removeSettlement(Settlement $settlement): self
+    {
+        if ($this->settlements->contains($settlement)) {
+            $this->settlements->removeElement($settlement);
+            // set the owning side to null (unless already changed)
+            if ($settlement->getPlayer() === $this) {
+                $settlement->setPlayer(null);
+            }
+        }
 
         return $this;
     }
