@@ -2,10 +2,9 @@ version: '3'
 services:
   open-catan:
     container_name: open-catan
-    image: fabrik/open-catan:latest
+    image: fabrik/open-catan:dev
     ports:
       - "8000:80/tcp"
     volumes:
       - ./data:/var/www/html
     restart: unless-stopped
-
