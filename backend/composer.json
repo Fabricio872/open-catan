@@ -1,4 +1,6 @@
 {
+    "name": "fabricio872/open-catan",
+    "description": "Online and open source version of Catatn board game",
     "type": "project",
     "license": "proprietary",
     "require": {
