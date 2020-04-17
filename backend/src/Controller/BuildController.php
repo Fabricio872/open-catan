@@ -16,7 +16,7 @@ use Symfony\Component\Routing\Annotation\Route;
 /**
  * @Route("/api/build", name="build.")
  */
-class BuildController extends ExtendedAbstractController
+class BuildController extends ApiController
 {
     /**
      * @ParamDecryptor(params={"id"})

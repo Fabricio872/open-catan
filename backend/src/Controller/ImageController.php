@@ -13,7 +13,7 @@ use Symfony\Component\Routing\Annotation\Route;
  * @package App\Controller
  * @Route("/", name="image.")
  */
-class ImageController extends ExtendedAbstractController
+class ImageController extends ApiController
 {
     static string $assetsDir = __DIR__ . "/../../assets/";
 

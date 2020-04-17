@@ -12,7 +12,7 @@ use Symfony\Component\Routing\Annotation\Route;
 /**
  * @Route("/api/game", name="game.")
  */
-class GameController extends ExtendedAbstractController
+class GameController extends ApiController
 {
     /**
      * @ParamDecryptor({"id"})

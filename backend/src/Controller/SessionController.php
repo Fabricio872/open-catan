@@ -13,7 +13,7 @@ use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 /**
  * @Route("/api/session", name="session.")
  */
-class SessionController extends ExtendedAbstractController
+class SessionController extends ApiController
 {
     /**
      * @Route("/new", name="new", methods={"POST"})

@@ -13,7 +13,7 @@ use Symfony\Component\Routing\Annotation\Route;
  * @package App\Controller
  * @Route("/api", name="user.")
  */
-class UserController extends ExtendedAbstractController
+class UserController extends ApiController
 {
     /**
      * @Route("/get/profile-picture", name="geProfilePic")
