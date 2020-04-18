@@ -22,7 +22,7 @@ class BuildController extends ApiController
      * @ParamDecryptor(params={"id"})
      * @Route("/road/{id}", name="road")
      */
-    public function road(Session $session, Request $request, GameValidator $validator)
+    public function road(Session $session, Request $request, GameValidator $validator, Response $response)
     {
         $data = json_decode($request->getContent());
         $validator->setHexagons(
@@ -36,42 +36,42 @@ class BuildController extends ApiController
         ]));
 
         if ($validator->isOnWater()) {
-            Response::inst()->addError("You cannot build on water");
+            $response->addError("You cannot build on water");
         }
 
         if ($validator->isNotNeighbors()) {
-            Response::inst()->addError("Hexagons are not neighbors");
+            $response->addError("Hexagons are not neighbors");
         }
 
         if (count(array_unique($data)) != count($data)) {
-            Response::inst()->addError("Hexagons must be unique");
+            $response->addError("Hexagons must be unique");
         }
 
-        if ($validator->isRoadNotNearSettlement() && $validator->isRoadNotNearRoad()) {
-            Response::inst()->addError("Road must be connected to settlement or another road");
+        if ($validator->isRoadNearSettlement() && $validator->isRoadNotNearRoad()) {
+            $response->addError("Road must be connected to settlement or another road");
         }
 
         /** @var Road $road */
         $road = $validator->getEntity();
 
         if ($this->em()->getRepository(Road::class)->exists($road)) {
-            Response::inst()->addError("Road already exists");
+            $response->addError("Road already exists");
         }
 
-        if (Response::inst()->ok()) {
+        if ($response->ok()) {
             $this->em()->persist($road);
             $this->em()->flush();
         }
 
-        Response::inst()->setMessage("Road was built");
-        return Response::inst()->getResponse();
+        $response->setMessage("Road was built");
+        return $response->getResponse();
     }
 
     /**
      * @ParamDecryptor(params={"id"})
      * @Route("/settlement/{id}", name="settlement")
      */
-    public function settlement(Session $session, Request $request, GameValidator $validator)
+    public function settlement(Session $session, Request $request, GameValidator $validator, Response $response)
     {
         $data = json_decode($request->getContent());
         $validator->setHexagons(
@@ -86,15 +86,15 @@ class BuildController extends ApiController
         ]));
 
         if ($validator->isOnWater()) {
-            Response::inst()->addError("You cannot build on water");
+            $response->addError("You cannot build on water");
         }
 
         if ($validator->isNotNeighbors()) {
-            Response::inst()->addError("Hexagons are not neighbors");
+            $response->addError("Hexagons are not neighbors");
         }
 
         if (count(array_unique($data)) != count($data)) {
-            Response::inst()->addError("Hexagons must be unique");
+            $response->addError("Hexagons must be unique");
         }
 
         /** @var Settlement $settlement */
@@ -102,26 +102,26 @@ class BuildController extends ApiController
 
         if ($city = $this->em()->getRepository(Settlement::class)->exists($settlement)) {
             if ($city->getIsCity()) {
-                Response::inst()->addError("Settlement is already a city");
+                $response->addError("Settlement is already a city");
             } else {
                 $city->setIsCity(true);
 
-                if (Response::inst()->ok()) {
+                if ($response->ok()) {
                     $this->em()->persist($city);
                     $this->em()->flush();
                 }
 
-                Response::inst()->setMessage("City was built");
-                return Response::inst()->getResponse();
+                $response->setMessage("City was built");
+                return $response->getResponse();
             }
         }
 
-        if (Response::inst()->ok()) {
+        if ($response->ok()) {
             $this->em()->persist($settlement);
             $this->em()->flush();
         }
 
-        Response::inst()->setMessage("Settlement was built");
-        return Response::inst()->getResponse();
+        $response->setMessage("Settlement was built");
+        return $response->getResponse();
     }
 }

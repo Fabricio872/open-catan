@@ -23,7 +23,7 @@ class UserController extends ApiController
         /** @var Image $image */
         $image = $this->getUser()->getImage();
 
-        return $this->json([
+        return $this->response([
             "url" => $this->getImageUrl($image, "default-user.png")
         ]);
     }
@@ -49,10 +49,7 @@ class UserController extends ApiController
         $this->em()->persist($user);
         $this->em()->flush();
 
-        return $this->json([
-            "status" => 200,
-            "success" => $image->getName()
-        ]);
+        return $this->respondWithSuccess($this->getImageUrl($image));
     }
 
     /**
@@ -71,9 +68,6 @@ class UserController extends ApiController
         $user->setImage(null);
         $this->em()->flush();
 
-        return $this->json([
-            "status" => 200,
-            "success" => "Picture deleted"
-        ]);
+        return $this->respondWithSuccess("Picture deleted");
     }
 }

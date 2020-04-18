@@ -40,6 +40,6 @@ class GameController extends ApiController
             $response["plan"][] = $hexArray;
         }
 
-        return $this->json($response);
+        return $this->response($response);
     }
 }
