@@ -61,7 +61,7 @@ class GameValidator
         return false;
     }
 
-    public function isRoadNotNearSettlement(): bool
+    public function isRoadNearSettlement(): bool
     {
         foreach ($this->em->getRepository(Settlement::class)->findBy([
             "player" => $this->player

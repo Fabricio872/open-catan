@@ -76,25 +76,25 @@ class ApiController extends AbstractController
     /**
      * Sets an error message and returns a JSON response
      *
-     * @param string $errors
+     * @param {string,array} $errors
      * @param $headers
      * @return JsonResponse
      */
     public function respondWithErrors($errors, $headers = [])
     {
         $data = [
-            'status' => $this->getStatusCode(),
+            'status' => ($this->getStatusCode() == 200) ? 400 : $this->getStatusCode(),
             'errors' => $errors,
         ];
 
-        return new JsonResponse($data, $this->getStatusCode(), $headers);
+        return new JsonResponse($data, ($this->getStatusCode() == 200) ? 400 : $this->getStatusCode(), $headers);
     }
 
 
     /**
      * Sets an error message and returns a JSON response
      *
-     * @param string $success
+     * @param {string,array} $success
      * @param $headers
      * @return JsonResponse
      */

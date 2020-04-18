@@ -42,14 +42,13 @@ class SessionController extends ApiController
             ->setScore($data->score)
             ->setCities($data->cities)
             ->setSettlements($data->settlements)
-            ->setRoads($data->roads)
-        ;
+            ->setRoads($data->roads);
 
 
         $this->em()->persist($session);
         $this->em()->flush();
 
-        return $this->json([
+        return $this->response([
 //            "invitation-link" => $this->generateUrl("session.addPlayer", ["id" => $session->getId()], UrlGeneratorInterface::ABSOLUTE_URL),
             "invitation-code" => $this->encryptor->encrypt($session->getId())
         ]);
@@ -77,16 +76,13 @@ class SessionController extends ApiController
 
         $player = new Player();
         $player->setUser($this->getUser());
-        $player->setColor(substr($data->color, 1));
+        $player->setColor($data->color);
         $session->addPlayer($player);
 
         $this->em()->persist($session);
         $this->em()->flush();
 
-        return $this->json([
-            "success" => "player added",
-            "game" => $session->getName()
-        ]);
+        return $this->respondWithSuccess('Joined game ' . $session->getName());
     }
 
     /**
@@ -105,6 +101,6 @@ class SessionController extends ApiController
             $playerArray["profile_picture"] = $this->getImageUrl($player->getUser()->getImage(), "default-user.png");
             $players[] = $playerArray;
         }
-        return $this->json($players);
+        return $this->response($players);
     }
 }

@@ -2,22 +2,13 @@
 
 namespace App\Service;
 
+use App\Controller\ApiController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 
-class Response
+class Response extends ApiController
 {
-    private static $instance;
     private array $errors = [];
     private string $message = "";
-
-    public static function inst(int $seed = null)
-    {
-        if (self::$instance == null) {
-            self::$instance = new Response();
-        }
-
-        return self::$instance;
-    }
 
     public function addError(string $errorMessage): void
     {
@@ -37,18 +28,9 @@ class Response
     public function getResponse(): JsonResponse
     {
         if ($this->errors == []) {
-
-            $response = [
-                "status" => "success",
-                "message" => $this->message,
-            ];
+            return $this->respondWithSuccess($this->message);
         } else {
-            $response = [
-                "status" => "failed",
-                "errors" => $this->errors,
-            ];
+            return $this->respondWithErrors($this->errors);
         }
-
-        return new JsonResponse($response, ($response["status"] == "failed") ? 400 : 200);
     }
 }
