@@ -1,12 +1,13 @@
 module Main exposing (..)
 
 import Browser
-import Html exposing (Html, div, h1, img, text)
-import Html.Attributes as Attributes exposing (src)
-import Html.Events as Events
-import Http
-import Json.Decode as Decode
-import Json.Encode as Encode
+import Element
+import Html exposing (Html)
+import Page.Registration.Init
+import Page.Registration.Model
+import Page.Registration.Msg
+import Page.Registration.Update
+import Page.Registration.View
 
 
 
@@ -14,23 +15,16 @@ import Json.Encode as Encode
 
 
 type alias Model =
-    { data : Data
-    , response : String
-    }
+    { page : Page }
 
 
-type alias Data =
-    { username : String
-    , email : String
-    , password : String
-    }
+type Page
+    = RegistrationPage Page.Registration.Model.Model
 
 
 init : ( Model, Cmd Msg )
 init =
-    ( { data = Data "name" "email" "password"
-      , response = ""
-      }
+    ( { page = RegistrationPage <| Tuple.first Page.Registration.Init.init }
     , Cmd.none
     )
 
@@ -40,58 +34,21 @@ init =
 
 
 type Msg
-    = Register
-    | RegisterResponse (Result Http.Error String)
+    = RegistrationMsg Page.Registration.Msg.Msg
 
 
 update : Msg -> Model -> ( Model, Cmd Msg )
 update msg model =
     case msg of
-        Register ->
-            ( model, registerCmd model.data )
-
-        RegisterResponse result ->
-            case result of
-                Err error ->
-                    let
-                        _ =
-                            Debug.log "error" error
-                    in
-                    ( model, Cmd.none )
-
-                Ok response ->
-                    ( { model | response = response }, Cmd.none )
-
-
-registerCmd : Data -> Cmd Msg
-registerCmd data =
-    let
-        url =
-            "http://localhost:8000" ++ "/register"
-    in
-    Http.request
-        { method = "POST"
-        , headers = [ Http.header "Content-Type" "application/json" ]
-        , url = url
-        , body = Http.jsonBody <| dataEncoder data
-        , expect = Http.expectJson RegisterResponse responseDecoder
-        , timeout = Nothing
-        , tracker = Nothing
-        }
-
-
-dataEncoder : Data -> Encode.Value
-dataEncoder { username, email, password } =
-    Encode.object
-        [ ( "username", Encode.string username )
-        , ( "email", Encode.string email )
-        , ( "password", Encode.string password )
-        ]
-
-
-responseDecoder : Decode.Decoder String
-responseDecoder =
-    Decode.field "success" Decode.string
+        RegistrationMsg subMsg ->
+            let
+                ( updatedPage, cmd ) =
+                    case model.page of
+                        RegistrationPage subModel ->
+                            Page.Registration.Update.update subMsg subModel
+                                |> Tuple.mapBoth RegistrationPage (Cmd.map RegistrationMsg)
+            in
+            ( { model | page = updatedPage }, cmd )
 
 
 
@@ -100,11 +57,11 @@ responseDecoder =
 
 view : Model -> Html Msg
 view model =
-    div []
-        [ img [ src "/logo.svg" ] []
-        , Html.button [ Events.onClick Register ] [ Html.text "Send register" ]
-        , Html.text model.response
-        ]
+    Element.layout [] <|
+        case model.page of
+            RegistrationPage subModel ->
+                Page.Registration.View.view subModel
+                    |> Element.map RegistrationMsg
 
 
 
